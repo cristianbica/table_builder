@@ -1,0 +1,30 @@
+.panel.panel-default.table-for-panel
+  .panel-heading
+    .row
+      .col-lg-4=table.subtitle.to_s.html_safe
+      .col-lg-4.text-center
+        -if table.options[:searchable]
+          =form_for(collection_url, method: :get) do |f|
+            .input-group
+              =text_field_tag(:q, params[:q], placeholder: "Search", class: "input-sm form-control")
+              span.input-group-btn
+                -if params[:q].present?
+                  =link_to "&times".html_safe, collection_url, class: "btn btn-sm btn-default", name: nil
+                =button_tag "Search", class: "btn btn-sm btn-default", name: nil
+      .col-lg-4.text-right
+        -table.collection_actions.each do |action|
+          -if action.to_s == 'add'
+            =>link_to "Add", url_for(controller: params[:controller], action: :new), class: "btn btn-default"
+          -else
+            ==>action
+  .table-responsive
+    =table.build_table
+  -if table.collection.respond_to?(:total_pages)
+    .panel-footer
+      .row
+        .col-lg-4
+          span=page_entries_info table.collection
+        .col-lg-4
+        .col-lg-4.text-right
+          -if table.options[:paginate]
+            =paginate table.collection
